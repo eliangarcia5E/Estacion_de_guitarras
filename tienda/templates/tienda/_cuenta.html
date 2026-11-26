@@ -1,0 +1,70 @@
+<style>
+    header { position: relative; }
+    .cuenta-zona { position: absolute; bottom: 10px; right: 16px; z-index: 50; }
+    .cuenta-btn {
+        display: inline-block;
+        padding: 9px 16px;
+        background-color: #b71c1c;
+        color: #ffffff;
+        border: none;
+        border-radius: 5px;
+        font-family: inherit;
+        font-size: 0.95rem;
+        font-weight: bold;
+        text-decoration: none;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+    .cuenta-btn:hover { background-color: #ff5252; }
+    .perfil-popup {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: calc(100% + 22px);
+        bottom: auto;
+        width: 240px;
+        background-color: #1e1e1e;
+        border: 1px solid #333;
+        border-top: 3px solid #b71c1c;
+        border-radius: 8px;
+        padding: 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+        text-align: left;
+    }
+    .perfil-popup.abierto { display: block; }
+    .perfil-popup .perfil-nombre { color: #ffffff; font-weight: bold; font-size: 1.05rem; margin-bottom: 4px; }
+    .perfil-popup .perfil-correo { color: #aaaaaa; font-size: 0.85rem; margin-bottom: 14px; word-break: break-all; }
+    .perfil-popup form { margin: 0; }
+    .perfil-popup .cuenta-btn { width: 100%; text-align: center; }
+</style>
+
+<div class="cuenta-zona">
+    {% if user.is_authenticated %}
+        <button type="button" class="cuenta-btn" onclick="togglePerfil(event)">Perfil</button>
+        <div id="perfil-popup" class="perfil-popup">
+            <p class="perfil-nombre">{{ user.get_username }}</p>
+            {% if user.email %}<p class="perfil-correo">{{ user.email }}</p>{% endif %}
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="cuenta-btn">Cerrar sesión</button>
+            </form>
+        </div>
+    {% else %}
+        <a href="{% url 'login' %}?next={{ request.get_full_path|urlencode }}" class="cuenta-btn">Iniciar sesión</a>
+    {% endif %}
+</div>
+
+<script>
+    function togglePerfil(evento) {
+        evento.stopPropagation();
+        const popup = document.getElementById('perfil-popup');
+        if (popup) popup.classList.toggle('abierto');
+    }
+
+    document.addEventListener('click', function (evento) {
+        const popup = document.getElementById('perfil-popup');
+        if (popup && !evento.target.closest('.cuenta-zona')) {
+            popup.classList.remove('abierto');
+        }
+    });
+</script>

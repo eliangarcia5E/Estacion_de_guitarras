@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if accion == 'eliminar' %}Eliminar productos{% else %}Editar productos{% endif %} - Estación de Guitarras</title>
+    <link rel="stylesheet" href="{% static 'tienda/style.css' %}">
+    <style>
+        .gestion-main { max-width: 800px; margin: 2rem auto; padding: 0 20px; text-align: left; }
+        .gestion-fila {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background-color: #1e1e1e;
+            border: 1px solid #333;
+            border-left: 3px solid #b71c1c;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-top: 12px;
+        }
+        .gestion-fila img { width: 80px; height: 60px; object-fit: contain; background-color: #111; border-radius: 4px; }
+        .gestion-info { flex: 1; color: #ddd; }
+        .gestion-info .precio { color: #ff5252; font-weight: bold; }
+        .gestion-accion {
+            padding: 8px 16px;
+            background-color: #b71c1c;
+            color: #fff;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .gestion-accion:hover { background-color: #ff5252; }
+        .gestion-accion-peligro { background-color: #424242; }
+        .gestion-accion-peligro:hover { background-color: #616161; }
+        .gestion-volver { display: inline-block; margin-top: 20px; color: #ccc; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-logo-container">
+            <img src="{% static 'tienda/image_028521.jpg' %}" alt="Logo Estación de Guitarras" class="logo-img">
+            <h1>ESTACIÓN DE GUITARRAS</h1>
+        </div>
+        {% include 'tienda/_cuenta.html' %}
+    </header>
+
+    <nav>
+        <a href="{% url 'index' %}">Inicio</a>
+        <a href="{% url 'nosotros' %}">Nosotros</a>
+        <a href="{% url 'productos' %}">Productos</a>
+        <a href="{% url 'servicios' %}">Servicios</a>
+        <a href="{% url 'contacto' %}">Contacto</a>
+        <a href="{% url 'pedidos' %}">Pedidos</a>
+        {% if user.is_staff %}<a href="{% url 'empleados' %}">Empleados</a>{% endif %}
+    </nav>
+
+    <main class="gestion-main">
+        <h2>{% if accion == 'eliminar' %}Eliminar un producto{% else %}Editar un producto{% endif %}</h2>
+        <p style="color: #ccc;">
+            {% if accion == 'eliminar' %}Elige el producto que quieres eliminar.{% else %}Elige el producto que quieres editar.{% endif %}
+        </p>
+
+        {% for p in productos %}
+            <div class="gestion-fila">
+                <img src="{{ p.imagen_url }}" alt="{{ p.nombre }}">
+                <div class="gestion-info">
+                    <strong>{{ p.nombre }}</strong><br>
+                    <span class="precio">{{ p.precio_texto }}</span>
+                </div>
+                {% if accion == 'eliminar' %}
+                    <a href="{% url 'producto_eliminar' p.pk %}" class="gestion-accion gestion-accion-peligro">Eliminar</a>
+                {% else %}
+                    <a href="{% url 'producto_editar' p.pk %}" class="gestion-accion">Editar</a>
+                {% endif %}
+            </div>
+        {% empty %}
+            <p style="color: #ccc; margin-top: 16px;">Todavía no hay productos.</p>
+        {% endfor %}
+
+        <a href="{% url 'productos' %}" class="gestion-volver">← Volver a productos</a>
+    </main>
+</body>
+</html>

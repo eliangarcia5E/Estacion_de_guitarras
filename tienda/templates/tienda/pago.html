@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pago - Estación de Guitarras</title>
+    <link rel="stylesheet" href="{% static 'tienda/style.css' %}">
+    <link rel="stylesheet" href="{% static 'tienda/auth.css' %}">
+</head>
+<body>
+    <header>
+        <div class="header-logo-container">
+            <img src="{% static 'tienda/image_028521.jpg' %}" alt="Logo Estación de Guitarras" class="logo-img">
+            <h1>ESTACIÓN DE GUITARRAS</h1>
+        </div>
+        {% include 'tienda/_cuenta.html' %}
+    </header>
+
+    <nav>
+        <a href="{% url 'index' %}">Inicio</a>
+        <a href="{% url 'nosotros' %}">Nosotros</a>
+        <a href="{% url 'productos' %}">Productos</a>
+        <a href="{% url 'servicios' %}">Servicios</a>
+        <a href="{% url 'contacto' %}">Contacto</a>
+        <a href="{% url 'pedidos' %}">Pedidos</a>
+        {% if user.is_staff %}<a href="{% url 'empleados' %}">Empleados</a>{% endif %}
+    </nav>
+
+    <main class="auth-main">
+        <div class="auth-card">
+            {% if confirmado %}
+                <h2>Compra confirmada</h2>
+                <p class="auth-mensaje">Tu compra se confirmó correctamente.</p>
+                <p style="color: #ccc; margin-top: 12px;"><strong>Usuario:</strong> {{ pedido.usuario.get_username }}</p>
+                <p style="color: #ccc; margin-top: 8px;"><strong>Tarjeta:</strong> **** **** **** {{ pedido.ultimos_digitos }}</p>
+                <p style="color: #ccc; margin-top: 8px;"><strong>Banco:</strong> {{ pedido.banco }}</p>
+                <p style="color: #ccc; margin-top: 8px;"><strong>Total:</strong> ${{ total }} MXN</p>
+                <a href="{{ enlace_whatsapp }}" target="_blank" rel="noopener noreferrer" class="auth-btn" style="background-color: #25d366;">Avisar a la tienda por WhatsApp</a>
+                <a href="{% url 'pedidos' %}" class="auth-btn auth-btn-secundario">Ver mis pedidos</a>
+            {% else %}
+                <h2>Pago</h2>
+                <p style="color: #ccc;"><strong>Cuenta:</strong> {{ user.get_username }}</p>
+                <p style="color: #ccc; margin-top: 6px;"><strong>Correo:</strong> {{ user.email }}</p>
+                <p style="color: #ccc; margin-top: 6px;"><strong>Celular:</strong> {{ telefono|default:"Sin número registrado" }}</p>
+
+                <h3 style="color: #fff; margin-top: 20px;">Resumen</h3>
+                <ul style="color: #ccc; margin-top: 8px; padding-left: 18px;">
+                    {% for linea in lineas %}
+                        <li>{{ linea.nombre }} × {{ linea.cantidad }} — ${{ linea.subtotal }} MXN</li>
+                    {% endfor %}
+                </ul>
+                <p style="color: #ff5252; font-weight: bold; margin-top: 10px;">Total: ${{ total }} MXN</p>
+
+                <form method="post" action="{% url 'pago' %}">
+                    {% csrf_token %}
+                    {% for campo in form %}
+                        <label for="{{ campo.id_for_label }}">{{ campo.label }}</label>
+                        {{ campo }}
+                        {% for error in campo.errors %}
+                            <p class="auth-error">{{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+
+                    <button type="submit" class="auth-btn">Ahora sí realizar compra</button>
+                </form>
+                <a href="{% url 'productos' %}" class="auth-btn auth-btn-secundario">Volver a productos</a>
+            {% endif %}
+        </div>
+    </main>
+</body>
+</html>

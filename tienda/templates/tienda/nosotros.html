@@ -1,0 +1,172 @@
+{% load static %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Estación de Guitarras - Sobre Nosotros</title>
+    <link rel="stylesheet" href="{% static 'tienda/style.css' %}">
+    <style>
+        .nosotros-container {
+            width: 100%;
+            margin: 2rem 0;
+            padding: 0 40px 0 0;
+        }
+        .nosotros-container h2 {
+            color: #fff;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            text-align: center;
+        }
+        
+        .nosotros-content {
+            display: flex;
+            align-items: center; 
+            gap: 50px; 
+            width: 100%;
+        }
+        
+        .nosotros-imagen {
+            flex: 1.4;
+            margin: 0;
+            padding: 0;
+        }
+        .nosotros-imagen img {
+            width: 100%;
+            height: auto;
+            max-height: 550px;
+            border-top-right-radius: 16px;
+            border-bottom-right-radius: 16px;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            box-shadow: 8px 10px 25px rgba(0,0,0,0.8);
+            object-fit: cover;
+            display: block;
+        }
+
+        .nosotros-texto {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-right: 20px;
+        }
+        .nosotros-texto p {
+            color: #bbb;
+            line-height: 1.7;
+            margin-bottom: 30px;
+            font-size: 1.15rem;
+            text-align: justify; /* Justifica el texto para eliminar bordes desiguales */
+        }
+
+        .botones-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 20px;
+        }
+        .btn-instagram {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            color: #fff;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .btn-instagram:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(220, 39, 67, 0.4);
+        }
+        .btn-volver {
+            display: inline-block;
+            background-color: #ff5252;
+            color: #fff;
+            padding: 12px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .btn-volver:hover {
+            background-color: #ff1744;
+        }
+
+        @media (max-width: 900px) {
+            .nosotros-container {
+                padding: 0 20px;
+            }
+            .nosotros-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            .nosotros-imagen img {
+                border-radius: 12px;
+            }
+            .nosotros-texto {
+                padding-right: 0;
+            }
+            .nosotros-texto p {
+                text-align: left; /* Alineación normal en celulares */
+            }
+            .botones-container {
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+            <div class="header-logo-container">
+           <img src="{% static 'tienda/image_028521.jpg' %}" alt="Logo Estación de Guitarras" class="logo-img">
+            <h1>ESTACIÓN DE GUITARRAS</h1>
+        </div>
+        {% include 'tienda/_cuenta.html' %}
+    </header>
+    
+    <nav>
+        <a href="{% url 'index' %}">Inicio</a>
+    <a href="{% url 'nosotros' %}">Nosotros</a>
+    <a href="{% url 'productos' %}">Productos</a>
+    <a href="{% url 'servicios' %}">Servicios</a>
+    <a href="{% url 'contacto' %}">Contacto</a>
+        {% if user.is_authenticated %}<a href="{% url 'pedidos' %}">Pedidos</a>{% endif %}
+    {% if user.is_staff %}<a href="{% url 'empleados' %}">Empleados</a>{% endif %}
+    </nav>
+
+    <main style="padding: 0;">
+        <div class="nosotros-container">
+            <h2>Sobre Nosotros</h2>
+            
+            <div class="nosotros-content">
+                
+                <div class="nosotros-imagen">
+                    <img src="{% static 'tienda/image_036e1a.jpg' %}" alt="Equipo de Estación de Guitarras">
+                </div>
+
+                <div class="nosotros-texto">
+                    <p>
+                        Somos músicos apasionados buscando el mejor servicio, nuestra empresa está pensada a que el consumidor obtenga mejores ofertas, mejor opción a la hora de adquirir un instrumento musical brindándole un excelente servicio, una buena atención las 24 horas del día. De nuestra parte le queremos dar la bienvenida a Estación de Guitarras y brindarle la posibilidad de obtener un instrumento musical a buen precio y que llegue de manera segura a su domicilio
+
+Pueden ubicarnos y en la siguiente direccion en cd de Mexico 
+Nebraska 75, Nápoles, Benito Juárez, 03810 Ciudad de México, CDMX.
+                    </p>
+                    
+                    <div class="botones-container">
+                        <a href="https://www.instagram.com/eliangarcia006?igsi=MTAweGRqNmRlZWFmYQ==" target="_blank" class="btn-instagram">
+                            📷 Síguenos en Instagram
+                        </a>
+
+                        <a href="{% url 'index' %}" class="btn-volver">← Volver al Inicio</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="main.js"></script>
+</body>
+</html>

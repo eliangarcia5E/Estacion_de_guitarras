@@ -1,0 +1,85 @@
+{% load static %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estación de Guitarras - Contacto</title>
+    <!-- Tu archivo CSS original se encarga de todo el diseño -->
+    <link rel="stylesheet" href="{% static 'tienda/style.css' %}">
+    
+    <!-- Agregamos solo este pequeño estilo para asegurar que los enlaces se vean como tus cajas rojas originales -->
+    <style>
+        .caja-contacto-enlace {
+            display: flex;
+            flex-direction: column; /* Pone el icono arriba y el texto abajo */
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ff5252; /* El borde rojo de tu diseño */
+            color: #ff5252; /* El color de texto rojo de tu diseño */
+            text-decoration: none; /* Quita el subrayado azul feo de los enlaces */
+            padding: 20px;
+            margin: 0 auto 20px auto;
+            border-radius: 5px;
+            width: 80%;
+            max-width: 450px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            background-color: transparent;
+            transition: background-color 0.3s ease;
+        }
+        
+        .caja-contacto-enlace:hover {
+            background-color: rgba(255, 82, 82, 0.1); /* Brillo sutil al pasar el mouse */
+        }
+
+        .caja-contacto-enlace i {
+            font-size: 1.5rem;
+            margin-bottom: 10px; /* Espacio entre el icono y el texto */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-logo-container">
+            <div class="header-logo-container">
+            <img src="{% static 'tienda/image_028521.jpg' %}" alt="Logo Estación de Guitarras" class="logo-img">
+            <h1>ESTACIÓN DE GUITARRAS</h1>
+        </div>
+        {% include 'tienda/_cuenta.html' %}
+    </header>
+    
+    <nav>
+        <a href="{% url 'index' %}">Inicio</a>
+    <a href="{% url 'nosotros' %}">Nosotros</a>
+    <a href="{% url 'productos' %}">Productos</a>
+    <a href="{% url 'servicios' %}">Servicios</a>
+    <a href="{% url 'contacto' %}">Contacto</a>
+        {% if user.is_authenticated %}<a href="{% url 'pedidos' %}">Pedidos</a>{% endif %}
+    {% if user.is_staff %}<a href="{% url 'empleados' %}">Empleados</a>{% endif %}
+    </nav>
+
+    <!-- Asumiendo que las clases de tu CSS original son estas -->
+    <main class="contacto-container">
+        <div class="caja-fondo-gris">
+            <h2>Contáctanos</h2>
+            <p>Si tienes algún problema con tu instrumento musical y también un pedal o si necesitas alguna ayuda acerca sobre comprar algún producto o el servicio de paquetería no dudes en mandarnos un mensaje a nuestro correo y revisar nuestras redes sociales.</p>
+
+            <!-- Botón funcional que abre Gmail en el navegador -->
+            <a href="{% if user.is_authenticated %}https://mail.google.com/mail/?view=cm&fs=1&to=garcialaramanuel867@gmail.com{% else %}{% url 'login' %}?next={% url 'contacto' %}{% endif %}"{% if user.is_authenticated %} target="_blank" rel="noopener noreferrer"{% endif %} class="caja-contacto-enlace">
+                <!-- Si usas FontAwesome u otra librería para tus iconos, mantén tu etiqueta original de icono aquí -->
+                <i class="fas fa-envelope"></i>
+                <span>garcialaramanuel867@gmail.com</span>
+            </a>
+
+            <!-- Botón funcional de WhatsApp -->
+            <a href="{% if user.is_authenticated %}https://wa.me/528312897837{% else %}{% url 'login' %}?next={% url 'contacto' %}{% endif %}"{% if user.is_authenticated %} target="_blank" rel="noopener noreferrer"{% endif %} class="caja-contacto-enlace">
+                <!-- Si usas FontAwesome u otra librería para tus iconos, mantén tu etiqueta original de icono aquí -->
+                <i class="fas fa-phone-alt"></i>
+                <span>831-289-7837</span>
+            </a>
+        </div>
+    </main>
+
+    <script src="main.js"></script>
+</body>
+</html>

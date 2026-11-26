@@ -1,0 +1,96 @@
+.btn {
+    display: inline-block;
+    background: #222;
+    color: #fff;
+    border: 1px solid #333;
+    padding: 8px 14px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #c00;
+    border-color: #c00;
+}
+
+.btn-peligro {
+    background: #c00;
+    border-color: #c00;
+}
+
+.mensaje {
+    background: #1e3d1e;
+    border-left: 4px solid #4caf50;
+    padding: 10px 14px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+
+.tabla {
+    width: 100%;
+    border-collapse: collapse;
+    background: #1a1a1a;
+    border: 1px solid #333;
+}
+
+.tabla th {
+    background: #000;
+    color: #fff;
+    text-align: left;
+    padding: 10px;
+    border-bottom: 2px solid #c00;
+}
+
+.tabla td {
+    padding: 10px;
+    border-bottom: 1px solid #2a2a2a;
+}
+
+.tabla tr:hover td {
+    background: #222;
+}
+
+.acciones a {
+    color: #ff6b6b;
+    text-decoration: none;
+    margin: 0 4px;
+}
+
+.acciones a:hover {
+    text-decoration: underline;
+}
+
+.tarjeta {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 25px;
+    max-width: 500px;
+}
+
+.tarjeta input,
+.tarjeta select,
+.tarjeta textarea {
+    width: 100%;
+    background: #111;
+    color: #eee;
+    border: 1px solid #444;
+    border-radius: 4px;
+    padding: 8px;
+    box-sizing: border-box;
+    margin-top: 4px;
+}
+
+.tarjeta p {
+    margin-bottom: 16px;
+}
+
+.errorlist {
+    color: #ff6b6b;
+    list-style: none;
+    padding: 0;
+    margin: 4px 0 0;
+    font-size: 14px;
+}

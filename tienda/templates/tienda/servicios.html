@@ -1,0 +1,243 @@
+{% load static %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Estación de Guitarras - Servicios</title>
+    <link rel="stylesheet" href="{% static 'tienda/style.css' %}">
+    <style>
+        .servicios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 2rem;
+            text-align: left;
+        }
+        .card-servicio {
+            background-color: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .card-servicio:hover {
+            transform: translateY(-5px);
+            border-color: #ff5252;
+        }
+        .badge-servicio {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #ff5252;
+            color: #fff;
+            padding: 5px 10px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+        .card-servicio img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .card-servicio h3 {
+            font-size: 1.2rem;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+        .card-servicio p {
+            color: #bbb;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        /* Estilos del Modal (Ventana Emergente) */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: #1a1a1a;
+            border: 1px solid #444;
+            width: 90%;
+            max-width: 500px;
+            padding: 25px;
+            border-radius: 8px;
+            position: relative;
+            text-align: left;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.7);
+        }
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #ff5252;
+            color: #fff;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-close:hover {
+            background: #ff1744;
+        }
+        .modal-content img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .btn-volver {
+            display: inline-block;
+            margin-top: 2rem;
+            background-color: #ff5252;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .btn-volver:hover {
+            background-color: #ff1744;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-logo-container">
+            <img src="{% static 'tienda/image_028521.jpg' %}" alt="Logo Estación de Guitarras" class="logo-img">
+            <h1>ESTACIÓN DE GUITARRAS</h1>
+        </div>
+        {% include 'tienda/_cuenta.html' %}
+    </header>
+    
+    <nav>
+        <a href="{% url 'index' %}">Inicio</a>
+    <a href="{% url 'nosotros' %}">Nosotros</a>
+    <a href="{% url 'productos' %}">Productos</a>
+    <a href="{% url 'servicios' %}">Servicios</a>
+    <a href="{% url 'contacto' %}">Contacto</a>
+        {% if user.is_authenticated %}<a href="{% url 'pedidos' %}">Pedidos</a>{% endif %}
+    {% if user.is_staff %}<a href="{% url 'empleados' %}">Empleados</a>{% endif %}
+    </nav>
+
+    <main style="max-width: 1100px; margin: auto; padding: 20px; text-align: center;">
+        <h2 style="margin-top: 2rem; color: #fff;">Nuestros Servicios</h2>
+        <p style="color: #bbb; max-width: 800px; margin: 10px auto 0 auto;">
+            Si su instrumento musical o pedal eléctrico tiene algún tipo de falla, aquí tenemos nuestro servicio de mantenimiento y reparación especializada para solucionar cualquier problema. Haz clic en cada tarjeta para conocer los detalles completos del servicio.
+        </p>
+
+        <!-- Contenedor de Servicios -->
+        <div class="servicios-grid">
+            <!-- Servicio 1 -->
+            <div class="card-servicio" onclick="abrirModal('modal-serv1')">
+                <span class="badge-servicio">Mantenimiento</span>
+                <img src="{% static 'tienda/servicio_calibracion.jpg' %}" alt="Calibración y limpieza general">
+                <h3>Calibración y Limpieza General</h3>
+                <p>Deals optimization for your action, truss rod adjustments, fretboard conditioning, and deep body cleaning.</p>
+            </div>
+
+            <!-- Servicio 2 -->
+            <div class="card-servicio" onclick="abrirModal('modal-serv2')">
+                <span class="badge-servicio">Electrónica</span>
+                <img src="{% static 'tienda/servicio_electronica.jpg' %}" alt="Reparación de Electrónica y Circuitos">
+                <h3>Reparación de Electrónica y Circuitos</h3>
+                <p>Solución de problemas en potenciómetros, cambio de pastillas, jack de salida y reparación integral de pedales de efecto.</p>
+            </div>
+
+            <!-- Servicio 3 -->
+            <div class="card-servicio" onclick="abrirModal('modal-serv3')">
+                <span class="badge-servicio">Lutería / Estructura</span>
+                <img src="{% static 'tienda/servicio_restauracion.jpg' %}" alt="Restauración de Cuerpos y Mejoras">
+                <h3>Restauración de Cuerpos y Mejoras</h3>
+                <p>Reparación de guitarras dañadas o destruidas de cierta parte del cuerpo, reemplazo de piezas y optimizaciones avanzadas.</p>
+            </div>
+        </div>
+
+        <div>
+            <a href="{% url 'index' %}" class="btn-volver">← Volver al Inicio</a>
+        </div>
+    </main>
+
+    <!-- MODALES / VENTANAS EMERGENTES PARA SERVICIOS -->
+
+    <!-- Modal Servicio 1 -->
+    <div id="modal-serv1" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="cerrarModal('modal-serv1')">&times;</button>
+            <img src="{% static 'tienda/servicio_calibracion.jpg' %}" alt="Calibración y limpieza">
+            <h2 style="color: #fff; margin-bottom: 10px;">Calibración de Cuerdas y Limpieza General</h2>
+            <p style="color: #ccc; line-height: 1.5; margin-bottom: 15px;">
+                Nuestro servicio de calibración incluye ajuste de altura de cuerdas (acción), octavación precisa, ajuste de alma (truss rod) para corregir curvaturas en el mástil, hidratación de diapasón y una limpieza estética profunda de todo el instrumento para que recupere el tacto y brillo del primer día.
+            </p>
+            <span style="color: #ff5252; font-weight: bold;">Tiempo estimado: 24 - 48 horas</span>
+        </div>
+    </div>
+
+    <!-- Modal Servicio 2 -->
+    <div id="modal-serv2" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="cerrarModal('modal-serv2')">&times;</button>
+            <img src="{% static 'tienda/servicio_electronica.jpg' %}" alt="Reparación de Electrónica y Circuitos">
+            <h2 style="color: #fff; margin-bottom: 10px;">Cambios de Electrónica y Circuitos Internos</h2>
+            <p style="color: #ccc; line-height: 1.5; margin-bottom: 15px;">
+                Solucionamos problemas de ruidos molestos, falsos contactos, potenciómetros zumbando o pérdida de señal. Realizamos reemplazo y actualización de pastillas (pickups), instalación de nuevos circuitos, apantallamiento de cavidades para eliminar interferencias electromagnéticas y reparación de circuitos internos en pedales de efectos.
+            </p>
+            <span style="color: #ff5252; font-weight: bold;">Diagnóstico profesional incluido</span>
+        </div>
+    </div>
+
+    <!-- Modal Servicio 3 -->
+    <div id="modal-serv3" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="cerrarModal('modal-serv3')">&times;</button>
+            <img src="{% static 'tienda/servicio_restauracion.jpg' %}" alt="Restauración de cuerpos">
+            <h2 style="color: #fff; margin-bottom: 10px;">Reparación de Cuerpos, Reemplazos y Mejoras</h2>
+            <p style="color: #ccc; line-height: 1.5; margin-bottom: 15px;">
+                Si tu guitarra sufrió un accidente y se fracturó o destruyó de alguna parte del cuerpo o pala, nuestro equipo de lutería realiza reconstrucciones estructurales invisibles. También podemos reemplazar piezas dañadas por componentes totalmente nuevos de alta gama y aplicar modificaciones a la medida para mejorar la resonancia y rendimiento general.
+            </p>
+            <span style="color: #ff5252; font-weight: bold;">Trabajo artesanal garantizado</span>
+        </div>
+    </div>
+
+    <!-- Script JavaScript para controlar los modales -->
+    <script>
+        function abrirModal(id) {
+            document.getElementById(id).style.display = 'flex';
+        }
+
+        function cerrarModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal-overlay')) {
+                event.target.style.display = 'none';
+            }
+        }
+    </script>
+    <script src="main.js"></script>
+</body>
+</html>

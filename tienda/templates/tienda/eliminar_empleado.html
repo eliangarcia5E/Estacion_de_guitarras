@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Eliminar empleado - Estación de Guitarras</title>
+    <link rel="stylesheet" href="{% static 'tienda/style.css' %}">
+    <link rel="stylesheet" href="{% static 'tienda/empleados.css' %}">
+</head>
+<body>
+    <header>
+        <div class="header-logo-container">
+            <img src="{% static 'tienda/image_028521.jpg' %}" alt="Logo Estación de Guitarras" class="logo-img">
+            <h1>ESTACIÓN DE GUITARRAS</h1>
+        </div>
+        {% include 'tienda/_cuenta.html' %}
+    </header>
+
+    <nav>
+        <a href="{% url 'index' %}">Inicio</a>
+        <a href="{% url 'nosotros' %}">Nosotros</a>
+        <a href="{% url 'productos' %}">Productos</a>
+        <a href="{% url 'servicios' %}">Servicios</a>
+        <a href="{% url 'contacto' %}">Contacto</a>
+        {% if user.is_authenticated %}<a href="{% url 'pedidos' %}">Pedidos</a>{% endif %}
+        {% if user.is_staff %}<a href="{% url 'empleados' %}">Empleados</a>{% endif %}
+    </nav>
+
+    <main style="max-width: 1100px; margin: auto; padding: 20px;">
+        <div class="tarjeta" style="margin-top: 2rem;">
+            <h2>¿Eliminar a {{ empleado.nombre }} {{ empleado.apellido }}?</h2>
+            <p>Esta acción no se puede deshacer.</p>
+
+            <form method="post">
+                {% csrf_token %}
+                <button class="btn btn-peligro" type="submit">Sí, eliminar</button>
+                <a class="btn" href="{% url 'empleados' %}">Cancelar</a>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

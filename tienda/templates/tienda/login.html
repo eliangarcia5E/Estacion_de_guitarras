@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estación de Guitarras - Iniciar sesión</title>
+    <link rel="stylesheet" href="{% static 'tienda/style.css' %}">
+    <link rel="stylesheet" href="{% static 'tienda/auth.css' %}">
+</head>
+<body>
+    <header>
+        <div class="header-logo-container">
+            <img src="{% static 'tienda/image_028521.jpg' %}" alt="Logo Estación de Guitarras" class="logo-img">
+            <h1>ESTACIÓN DE GUITARRAS</h1>
+        </div>
+    </header>
+
+    <main class="auth-main">
+        <div class="auth-card">
+            <a href="{% url 'index' %}" class="auth-cerrar" title="Volver a la página">&times;</a>
+
+            <h2>Iniciar sesión</h2>
+
+            {% for message in messages %}
+                <p class="auth-mensaje">{{ message }}</p>
+            {% endfor %}
+
+            {% if error %}
+                <p class="auth-error">{{ error }}</p>
+            {% endif %}
+
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ next }}">
+
+                <label for="username">Nombre de usuario</label>
+                <input type="text" id="username" name="username" required autofocus>
+
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" required>
+
+                <button type="submit" class="auth-btn">Iniciar sesión</button>
+            </form>
+
+            <p class="auth-separador">¿No tienes cuenta?</p>
+            <a href="{% url 'registro' %}{% if next %}?next={{ next|urlencode }}{% endif %}" class="auth-btn auth-btn-secundario">Crear cuenta</a>
+        </div>
+    </main>
+</body>
+</html>

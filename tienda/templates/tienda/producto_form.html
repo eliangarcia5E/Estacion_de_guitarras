@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if producto %}Editar producto{% else %}Agregar producto{% endif %} - Estación de Guitarras</title>
+    <link rel="stylesheet" href="{% static 'tienda/style.css' %}">
+    <link rel="stylesheet" href="{% static 'tienda/auth.css' %}">
+    <style>
+        .auth-card textarea {
+            width: 100%;
+            padding: 11px 12px;
+            background-color: #2c2c2c;
+            border: 1px solid #444;
+            border-radius: 5px;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: vertical;
+        }
+        .auth-card input[type="file"] { padding: 8px; }
+        .vista-previa-producto {
+            display: block;
+            max-width: 100%;
+            max-height: 220px;
+            margin-top: 14px;
+            border-radius: 6px;
+            border: 1px solid #444;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-logo-container">
+            <img src="{% static 'tienda/image_028521.jpg' %}" alt="Logo Estación de Guitarras" class="logo-img">
+            <h1>ESTACIÓN DE GUITARRAS</h1>
+        </div>
+        {% include 'tienda/_cuenta.html' %}
+    </header>
+
+    <main class="auth-main">
+        <div class="auth-card">
+            <h2>{% if producto %}Editar producto{% else %}Agregar producto{% endif %}</h2>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                {% for campo in form %}
+                    <label for="{{ campo.id_for_label }}">{{ campo.label }}</label>
+                    {{ campo }}
+                    {% for error in campo.errors %}
+                        <p class="auth-error">{{ error }}</p>
+                    {% endfor %}
+                {% endfor %}
+
+                <img id="vista-previa" class="vista-previa-producto"
+                     {% if producto %}src="{{ producto.imagen_url }}"{% else %}style="display: none;"{% endif %}
+                     alt="Vista previa de la imagen">
+
+                <button type="submit" class="auth-btn">Aceptar</button>
+            </form>
+
+            <a href="{% url 'productos' %}" class="auth-btn auth-btn-secundario">Cancelar</a>
+        </div>
+    </main>
+
+    <script>
+        // Muestra la imagen elegida antes de guardar
+        document.getElementById('input-imagen').addEventListener('change', function (evento) {
+            const archivo = evento.target.files[0];
+            const vista = document.getElementById('vista-previa');
+            if (archivo) {
+                vista.src = URL.createObjectURL(archivo);
+                vista.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

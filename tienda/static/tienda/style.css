@@ -1,0 +1,86 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+header {
+    background-color: #000000;
+    text-align: center;
+    padding: 2.5rem 1rem;
+    border-bottom: 3px solid #b71c1c;
+}
+
+header h1 {
+    font-size: 2.8rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #ffffff;
+}
+
+nav {
+    background-color: #1f1f1f;
+    padding: 1rem;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    border-bottom: 1px solid #333;
+}
+
+nav a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 10px 18px;
+    border-radius: 5px;
+    background-color: #2c2c2c;
+    transition: all 0.3s ease;
+}
+
+nav a:hover, nav a.active {
+    background-color: #b71c1c;
+}
+
+main {
+    max-width: 900px;
+    margin: 2.5rem auto;
+    padding: 0 20px;
+    text-align: center;
+}
+
+.btn-volver {
+    display: inline-block;
+    margin-top: 2rem;
+    padding: 10px 20px;
+    background-color: #b71c1c;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.btn-volver:hover {
+    background-color: #ff5252;
+}
+
+.header-logo-container {
+    display: flex;
+    align-items: center; 
+    justify-content: flex-start; 
+    padding-left: 20px; 
+    gap: 15px; 
+}
+
+.logo-img {
+    height: 50px; /* Controla la altura del logo */
+    width: 50px;  /* Mantiene la proporción circular */
+    border-radius: 50%; /* Recorta el marco blanco */
+    object-fit: cover;
+}

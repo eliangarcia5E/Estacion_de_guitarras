@@ -1,0 +1,666 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Estación de Guitarras - Productos</title>
+    <link rel="stylesheet" href="{% static 'tienda/style.css' %}">
+    <style>
+        .catalogo-container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .catalogo-container h2 {
+            color: #fff;
+            margin-top: 1rem;
+            font-size: 2rem;
+        }
+        .catalogo-container p {
+            color: #bbb;
+            margin-bottom: 2rem;
+        }
+
+        /* Botón flotante del carrito */
+        .carrito-flotante {
+            position: fixed;
+            top: 20px;
+            right: 25px;
+            background-color: #1e1e1e;
+            border: 2px solid #ff5252;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: background 0.3s;
+        }
+        .carrito-flotante:hover {
+            background-color: #ff5252;
+        }
+        .contador-carrito {
+            background-color: #ff5252;
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 50%;
+            font-size: 0.9rem;
+        }
+        .carrito-flotante:hover .contador-carrito {
+            background-color: #fff;
+            color: #ff5252;
+        }
+
+        /* Panel Lateral del Carrito */
+        .carrito-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 380px;
+            height: 100%;
+            background-color: #161616;
+            border-left: 1px solid #333;
+            box-shadow: -5px 0 25px rgba(0,0,0,0.8);
+            z-index: 1500;
+            transition: right 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .carrito-panel.activo {
+            right: 0;
+        }
+        .carrito-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+        .carrito-header h3 {
+            color: #fff;
+            margin: 0;
+            font-size: 1.3rem;
+        }
+        .cerrar-carrito {
+            background: none;
+            border: none;
+            color: #ff5252;
+            font-size: 1.5rem;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .carrito-items {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+        .carrito-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #222;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border-left: 4px solid #ff5252;
+        }
+        .carrito-item-info h4 {
+            color: #fff;
+            font-size: 0.95rem;
+            margin: 0 0 5px 0;
+        }
+        .carrito-controles-cantidad {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 8px 0;
+        }
+        .btn-carrito-cant {
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #444;
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 0.3s;
+        }
+        .btn-carrito-cant:hover {
+            background-color: #ff5252;
+            border-color: #ff5252;
+        }
+        .numero-carrito-cant {
+            color: #fff;
+            font-size: 1rem;
+            min-width: 20px;
+            text-align: center;
+        }
+        .carrito-item-info span {
+            color: #ff5252;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        .btn-eliminar {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .btn-eliminar:hover {
+            color: #ff1744;
+        }
+        .carrito-footer {
+            border-top: 1px solid #333;
+            padding-top: 15px;
+            text-align: right;
+        }
+        .carrito-total {
+            color: #fff;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .carrito-total span:last-child {
+            color: #ff5252;
+            font-weight: bold;
+        }
+        .btn-pagar {
+            width: 100%;
+            background-color: #ff5252;
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn-pagar:hover {
+            background-color: #ff1744;
+        }
+
+        /* Cuadrícula de productos */
+        .productos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        .card-producto {
+            background-color: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: left;
+            cursor: pointer;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .card-producto:hover {
+            transform: translateY(-8px);
+            border-color: #ff5252;
+            box-shadow: 0 10px 20px rgba(255, 82, 82, 0.2);
+        }
+        .card-producto img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            background-color: #fff;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .card-producto h3 {
+            color: #fff;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        .card-producto .precio {
+            color: #ff5252;
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-top: auto;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content-split {
+            background: #1a1a1a;
+            border: 1px solid #444;
+            width: 90%;
+            max-width: 850px; 
+            border-radius: 8px;
+            position: relative;
+            display: flex; 
+            overflow: hidden;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.8);
+        }
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #ff5252;
+            color: #fff;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 10;
+            transition: background 0.3s;
+        }
+        .modal-close:hover {
+            background: #ff1744;
+        }
+        .modal-img-col {
+            flex: 1; 
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-img-col img {
+            max-width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+        }
+        .modal-info-col {
+            flex: 1; 
+            padding: 40px 30px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .modal-info-col h2 {
+            color: #fff;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        .modal-info-col .precio-modal {
+            color: #ff5252;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .modal-info-col p {
+            color: #ccc;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .controles-cantidad {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            background-color: #222;
+            padding: 5px;
+            border-radius: 5px;
+            width: max-content;
+        }
+        .btn-cantidad {
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #444;
+            width: 35px;
+            height: 35px;
+            border-radius: 4px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 0.3s, border-color 0.3s;
+        }
+        .btn-cantidad:hover {
+            background-color: #ff5252;
+            border-color: #ff5252;
+        }
+        .numero-cantidad {
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: bold;
+            min-width: 30px;
+            text-align: center;
+        }
+        .btn-comprar {
+            background-color: #ff5252;
+            color: #fff;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            text-align: center;
+        }
+        .btn-comprar:hover {
+            background-color: #ff1744;
+        }
+        @media (max-width: 768px) {
+            .modal-content-split {
+                flex-direction: column;
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+            .modal-img-col {
+                min-height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-logo-container">
+            <img src="{% static 'tienda/image_028521.jpg' %}" alt="Logo Estación de Guitarras" class="logo-img">
+            <h1>ESTACIÓN DE GUITARRAS</h1>
+        </div>
+        {% include 'tienda/_cuenta.html' %}
+    </header>
+    
+    <nav>
+        <a href="{% url 'index' %}">Inicio</a>
+        <a href="{% url 'nosotros' %}">Nosotros</a>
+        <a href="{% url 'productos' %}">Productos</a>
+        <a href="{% url 'servicios' %}">Servicios</a>
+        <a href="{% url 'contacto' %}">Contacto</a>
+        {% if user.is_authenticated %}<a href="{% url 'pedidos' %}">Pedidos</a>{% endif %}
+        {% if user.is_staff %}<a href="{% url 'empleados' %}">Empleados</a>{% endif %}
+    </nav>
+
+    <!-- BOTÓN FLOTANTE DEL CARRITO -->
+    <div class="carrito-flotante" onclick="toggleCarrito()">
+        🛒 Carrito <span id="contador-carrito" class="contador-carrito">0</span>
+    </div>
+
+    <!-- PANEL LATERAL DESPLEGABLE DEL CARRITO -->
+    <div id="carrito-panel" class="carrito-panel">
+        <div class="carrito-header">
+            <h3>Tus Productos</h3>
+            <button class="cerrar-carrito" onclick="toggleCarrito()">&times;</button>
+        </div>
+        <div id="carrito-items" class="carrito-items">
+            <p style="color: #777; text-align: center; margin-top: 40px;">Tu carrito está vacío</p>
+        </div>
+        <div class="carrito-footer">
+            <div class="carrito-total">
+                <span>Total:</span>
+                <span id="carrito-total-precio">$0 MXN</span>
+            </div>
+            <button class="btn-pagar" onclick="procederAlPago()">Proceder al pago</button>
+        </div>
+    </div>
+
+    <main class="catalogo-container">
+        <h2>Catálogo de Instrumentos y Efectos</h2>
+        <p>Explora nuestra selección exclusiva de guitarras eléctricas, acústicas, amplificadores y pedales profesionales.</p>
+
+        {% if user.is_superuser %}
+        <div class="admin-productos">
+            <a href="{% url 'producto_agregar' %}" class="btn-admin">Agregar producto</a>
+            <a href="{% url 'productos_gestionar' %}?accion=editar" class="btn-admin">Editar producto</a>
+            <a href="{% url 'productos_gestionar' %}?accion=eliminar" class="btn-admin btn-admin-peligro">Eliminar producto</a>
+        </div>
+        <style>
+            .admin-productos { display: flex; flex-wrap: wrap; gap: 12px; margin: 10px 0 24px; }
+            .btn-admin {
+                padding: 10px 18px;
+                background-color: #b71c1c;
+                color: #ffffff;
+                border-radius: 5px;
+                text-decoration: none;
+                font-weight: bold;
+                transition: background-color 0.2s ease;
+            }
+            .btn-admin:hover { background-color: #ff5252; }
+            .btn-admin-peligro { background-color: #424242; }
+            .btn-admin-peligro:hover { background-color: #616161; }
+        </style>
+        {% endif %}
+
+        <div class="productos-grid">
+            {% for p in productos %}
+            <div class="card-producto"
+                 data-nombre="{{ p.nombre }}"
+                 data-precio="{{ p.precio }}"
+                 data-descripcion="{{ p.descripcion }}"
+                 data-imagen="{{ p.imagen_url }}"
+                 onclick="abrirModalDesdeCard(this)">
+                <img src="{{ p.imagen_url }}" alt="{{ p.nombre }}">
+                <h3>{{ p.nombre }}</h3>
+                <span class="precio">{{ p.precio_texto }}</span>
+            </div>
+            {% empty %}
+            <p style="color: #ccc;">Todavía no hay productos.</p>
+            {% endfor %}
+        </div>
+    </main>
+
+    <!-- MODAL DE PRODUCTO -->
+    <div id="modal-producto" class="modal-overlay">
+        <div class="modal-content-split">
+            <button class="modal-close" onclick="cerrarModalProducto()">&times;</button>
+            <div class="modal-img-col">
+                <img id="modal-img" src="" alt="Producto">
+            </div>
+            <div class="modal-info-col">
+                <h2 id="modal-titulo"></h2>
+                <div id="modal-precio" class="precio-modal"></div>
+                <p id="modal-desc"></p>
+                
+                <div class="controles-cantidad">
+                    <button class="btn-cantidad" onclick="cambiarCantidadModal(-1)">-</button>
+                    <span id="modal-cantidad" class="numero-cantidad">1</span>
+                    <button class="btn-cantidad" onclick="cambiarCantidadModal(1)">+</button>
+                </div>
+                
+                <button class="btn-comprar" onclick="agregarAlCarritoActual()">Agregar al Carrito</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulario oculto que envía el carrito a la página de pago -->
+    <form id="form-pago" method="post" action="{% url 'iniciar_pago' %}" style="display: none;">
+        {% csrf_token %}
+        <input type="hidden" id="carrito-json" name="carrito" value="[]">
+    </form>
+
+    <!-- Script de Gestión de Modal y Carrito -->
+    <script>
+        let carrito = [];
+        let productoActual = null;
+        let cantidadSeleccionada = 1;
+
+        // Para comprar hace falta iniciar sesión: si no hay sesión, se manda al login
+        const USUARIO_AUTENTICADO = {% if user.is_authenticated %}true{% else %}false{% endif %};
+        const URL_LOGIN = "{% url 'login' %}?next={% url 'productos' %}";
+
+        function requiereLogin() {
+            if (USUARIO_AUTENTICADO) return false;
+            window.location.href = URL_LOGIN;
+            return true;
+        }
+
+        function procederAlPago() {
+            if (requiereLogin()) return;
+            if (carrito.length === 0) {
+                alert('Tu carrito está vacío.');
+                return;
+            }
+            document.getElementById('carrito-json').value = JSON.stringify(carrito);
+            document.getElementById('form-pago').submit();
+        }
+
+        function abrirModalDesdeCard(elemento) {
+            const precio = parseFloat(elemento.dataset.precio) || 0;
+            const precioTexto = '$' + precio.toLocaleString('es-MX') + ' MXN';
+            abrirModalProducto(elemento.dataset.nombre, precioTexto, elemento.dataset.descripcion, elemento.dataset.imagen);
+        }
+
+        function abrirModalProducto(titulo, precioTexto, descripcion, imagen) {
+            let precio = parseFloat(precioTexto.replace(/[^0-9.-]+/g, "")) || 0;
+            
+            productoActual = {
+                titulo: titulo,
+                precio: precio,
+                precioTexto: precioTexto
+            };
+
+            const elemTitulo = document.getElementById('modal-titulo');
+            const elemPrecio = document.getElementById('modal-precio');
+            const elemDesc = document.getElementById('modal-desc');
+            const elemImg = document.getElementById('modal-img');
+            const elemCant = document.getElementById('modal-cantidad');
+            const modal = document.getElementById('modal-producto');
+
+            if (elemTitulo) elemTitulo.innerText = titulo;
+            if (elemPrecio) elemPrecio.innerText = precioTexto;
+            if (elemDesc) elemDesc.innerText = descripcion;
+            if (elemImg) elemImg.src = imagen;
+
+            cantidadSeleccionada = 1;
+            if (elemCant) elemCant.innerText = cantidadSeleccionada;
+
+            if (modal) modal.style.display = 'flex';
+        }
+
+        function cerrarModalProducto() {
+            const modal = document.getElementById('modal-producto');
+            if (modal) modal.style.display = 'none';
+        }
+
+        function cambiarCantidadModal(cambio) {
+            let nuevaCantidad = cantidadSeleccionada + cambio;
+            if (nuevaCantidad >= 1) {
+                cantidadSeleccionada = nuevaCantidad;
+                const elemCant = document.getElementById('modal-cantidad');
+                if (elemCant) elemCant.innerText = cantidadSeleccionada;
+            }
+        }
+
+        function agregarAlCarritoActual() {
+            if (requiereLogin()) return;
+            if (!productoActual) return;
+
+            const indexExistente = carrito.findIndex(item => item.titulo === productoActual.titulo);
+
+            if (indexExistente !== -1) {
+                carrito[indexExistente].cantidad += cantidadSeleccionada;
+            } else {
+                carrito.push({
+                    titulo: productoActual.titulo,
+                    precio: productoActual.precio,
+                    precioTexto: productoActual.precioTexto,
+                    cantidad: cantidadSeleccionada
+                });
+            }
+
+            actualizarCarritoUI();
+            cerrarModalProducto();
+            toggleCarrito(); 
+        }
+
+        function cambiarCantidadCarrito(index, cambio) {
+            let nuevaCantidad = carrito[index].cantidad + cambio;
+            if (nuevaCantidad >= 1) {
+                carrito[index].cantidad = nuevaCantidad;
+                actualizarCarritoUI();
+            }
+        }
+
+        function eliminarDelCarrito(index) {
+            carrito.splice(index, 1);
+            actualizarCarritoUI();
+        }
+
+        function actualizarCarritoUI() {
+            const contador = document.getElementById('contador-carrito');
+            const contenedorItems = document.getElementById('carrito-items');
+            const totalPrecioElem = document.getElementById('carrito-total-precio');
+
+            let totalArticulos = carrito.reduce((suma, item) => suma + item.cantidad, 0);
+            if (contador) contador.innerText = totalArticulos;
+
+            if (!contenedorItems) return;
+
+            if (carrito.length === 0) {
+                contenedorItems.innerHTML = '<p style="color: #777; text-align: center; margin-top: 40px;">Tu carrito está vacío</p>';
+                if (totalPrecioElem) totalPrecioElem.innerText = '$0 MXN';
+                return;
+            }
+
+            let htmlItems = '';
+            let totalSuma = 0;
+
+            carrito.forEach((prod, index) => {
+                let subtotalItem = prod.precio * prod.cantidad;
+                totalSuma += subtotalItem;
+                
+                htmlItems += `
+                    <div class="carrito-item">
+                        <div class="carrito-item-info">
+                            <h4>${prod.titulo}</h4>
+                            <div class="carrito-controles-cantidad">
+                                <button class="btn-carrito-cant" onclick="cambiarCantidadCarrito(${index}, -1)">-</button>
+                                <span class="numero-carrito-cant">${prod.cantidad}</span>
+                                <button class="btn-carrito-cant" onclick="cambiarCantidadCarrito(${index}, 1)">+</button>
+                            </div>
+                            <span>$${subtotalItem.toLocaleString('es-MX')} MXN</span>
+                        </div>
+                        <button class="btn-eliminar" onclick="eliminarDelCarrito(${index})" title="Eliminar producto">&times;</button>
+                    </div>
+                `;
+            });
+
+            contenedorItems.innerHTML = htmlItems;
+            if (totalPrecioElem) totalPrecioElem.innerText = '$' + totalSuma.toLocaleString('es-MX') + ' MXN';
+        }
+
+        function toggleCarrito() {
+            const panel = document.getElementById('carrito-panel');
+            if (panel) {
+                panel.classList.toggle('activo');
+            }
+        }
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal-overlay')) {
+                event.target.style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>
