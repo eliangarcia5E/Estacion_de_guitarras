@@ -26,6 +26,9 @@ urlpatterns = [
     path('productos/editar/<int:producto_id>/', views.producto_editar, name='producto_editar'),
     path('productos/eliminar/<int:producto_id>/', views.producto_eliminar, name='producto_eliminar'),
 
+    # Lista de usuarios registrados (solo superusuario)
+    path('usuarios/', views.usuarios, name='usuarios'),
+
     # CRUD de empleados (solo administradores)
     path('empleados/', views.empleados, name='empleados'),
     path('empleados/agregar/', views.guardar_empleado, name='agregar_empleado'),
