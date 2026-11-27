@@ -7,5 +7,4 @@ psycopg[binary]>=3.2,<4.0
 bcrypt==5.0.0
 requests==2.34.2
 python-dateutil==2.9.0.post0
-cloudinary>=1.41
-django-cloudinary-storage>=0.3
+cloudinary
