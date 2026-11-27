@@ -36,6 +36,25 @@
     .perfil-popup .perfil-correo { color: #aaaaaa; font-size: 0.85rem; margin-bottom: 14px; word-break: break-all; }
     .perfil-popup form { margin: 0; }
     .perfil-popup .cuenta-btn { width: 100%; text-align: center; }
+
+    .usuarios-lista { margin-bottom: 12px; }
+    .usuarios-lista summary { list-style: none; }
+    .usuarios-lista summary::-webkit-details-marker { display: none; }
+    .usuarios-lista ul {
+        list-style: none;
+        margin: 10px 0 0 0;
+        padding: 0;
+        max-height: 220px;
+        overflow-y: auto;
+    }
+    .usuarios-lista li {
+        color: #ffffff;
+        font-size: 0.9rem;
+        padding: 7px 0;
+        border-bottom: 1px solid #333;
+        word-break: break-all;
+    }
+    .usuarios-lista li span { color: #aaaaaa; font-size: 0.8rem; }
 </style>
 
 <div class="cuenta-zona">
@@ -44,6 +63,23 @@
         <div id="perfil-popup" class="perfil-popup">
             <p class="perfil-nombre">{{ user.get_username }}</p>
             {% if user.email %}<p class="perfil-correo">{{ user.email }}</p>{% endif %}
+
+            {% if user.is_superuser %}
+            <details class="usuarios-lista">
+                <summary class="cuenta-btn">Usuarios ({{ usuarios_registrados|length }})</summary>
+                <ul>
+                    {% for u in usuarios_registrados %}
+                    <li>
+                        <strong>{{ u.username }}</strong>
+                        {% if u.email %}<br><span>{{ u.email }}</span>{% endif %}
+                    </li>
+                    {% empty %}
+                    <li>Sin usuarios registrados.</li>
+                    {% endfor %}
+                </ul>
+            </details>
+            {% endif %}
+
             <form method="post" action="{% url 'logout' %}">
                 {% csrf_token %}
                 <button type="submit" class="cuenta-btn">Cerrar sesión</button>
