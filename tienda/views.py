@@ -10,7 +10,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
 
-from .models import Empleado, Pedido, PedidoItem, PerfilUsuario, Producto
+from .models import Empleado, Pedido, PedidoItem, PerfilUsuario, Producto, SEEDED_IMAGENES
 from .forms import EmpleadoForm, PagoForm, ProductoForm, RegistroForm
 
 
@@ -368,7 +368,7 @@ def producto_eliminar(request, producto_id):
     producto = get_object_or_404(Producto, pk=producto_id)
 
     if request.method == 'POST':
-        if producto.imagen:
+        if producto.imagen and producto.imagen.name not in SEEDED_IMAGENES:
             producto.imagen.delete(save=False)
         producto.delete()
         return redirect('productos')
