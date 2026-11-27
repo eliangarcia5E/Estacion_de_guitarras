@@ -5,6 +5,21 @@ from django.templatetags.static import static
 
 EXTENSIONES_IMAGEN = ['jpg', 'jpeg', 'png', 'webp', 'gif']
 
+# Los 10 productos iniciales (migración 0004) apuntan a su foto del proyecto,
+# para que no busquen un archivo que no existe en Cloudinary.
+SEEDED_IMAGENES = {
+    'productos/tagima.jpg': 'tienda/tagima.jpg',
+    'productos/fender_strato.jpg': 'tienda/fender_strato.jpg',
+    'productos/gibson_lespaul.jpg': 'tienda/gibson_lespaul.jpg',
+    'productos/fender_jaguar.jpg': 'tienda/fender_jaguar.jpg',
+    'productos/gibson_explorer.jpg': 'tienda/gibson_explorer.jpg',
+    'productos/gibson_acustica.jpg': 'tienda/gibson_acustica.jpg',
+    'productos/ds1.jpg': 'tienda/ds1.jpg',
+    'productos/sd1.jpg': 'tienda/sd1.jpg',
+    'productos/ch1.jpg': 'tienda/ch1.jpg',
+    'productos/whammy.jpg': 'tienda/whammy.jpg',
+}
+
 # Create your models here.
 class Empleado(models.Model):
     PUESTOS = [
@@ -56,6 +71,8 @@ class Producto(models.Model):
 
     @property
     def imagen_url(self):
+        if self.imagen.name in SEEDED_IMAGENES:
+            return static(SEEDED_IMAGENES[self.imagen.name])
         if self.imagen:
             return self.imagen.url
         return static('tienda/image_028521.jpg')
